@@ -47,7 +47,7 @@ def google_check(data):
         chrome_options = webdriver.ChromeOptions()
         #caps = DesiredCapabilities().CHROME
         #caps["pageLoadStrategy"] = "none"
-        chromedriver = '/Users/karlountalan/Desktop/FBBlocker/chromedriver'
+        chromedriver = '/usr/local/bin/chromedriver'
         os.environ["webdriver.chrome.driver"] = chromedriver
         chrome_options.add_argument('--headless')
         chrome_options.add_argument('--no-sandbox')
@@ -59,7 +59,6 @@ def google_check(data):
         driver.get(g_url)
 
         n_results_string = driver.find_element_by_xpath(r'//div[@id = "result-stats"]').get_attribute('innerHTML')
-        print(n_results_string)
 
         for i,n in enumerate(n_results_string.split()):
             if n.replace(',','').isnumeric():
