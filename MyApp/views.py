@@ -12,7 +12,6 @@ import json
 from rest_framework.permissions import IsAuthenticated
 import re
 
-##########
 from bs4 import BeautifulSoup
 import requests
 from requests import get
