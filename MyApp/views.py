@@ -77,7 +77,6 @@ def google_check(data):
             for ii,row in enumerate(results):
                 url = row.a['href']
                 dom_url = re.findall(regex,url)[0]
-                print(dom_url)
                 if dom_url == domain:
                     top_rank = ctr
                     break
