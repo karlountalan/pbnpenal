@@ -22,13 +22,22 @@ import random
 import os
 import re
 from itertools import cycle
-from selenium import webdriver
+from seleniumwire import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 # Create your views here.
+
+
+prx = pd.read_csv('proxylist.csv', header=None)
+proxy_list = []
+for i in range(len(prx)):
+  proxy = {'http':'http://'+str(prx.iloc[i,:][0].split(':')[3])+':'+str(prx.iloc[i,:][0].split(':')[4])+'@'+str(prx.iloc[i,:][0].split(':')[1])+':'+str(prx.iloc[i,:][0].split(':')[2])+'/', 'https':'https://'+str(prx.iloc[i,:][0].split(':')[3])+':'+str(prx.iloc[i,:][0].split(':')[4])+'@'+str(prx.iloc[i,:][0].split(':')[1])+':'+str(prx.iloc[i,:][0].split(':')[2])+'/'}
+  proxy_list.append({'proxy':proxy})
+
+
 
 def googlesearchURL(kw):
   encoded_kw = re.sub('[^A-Za-z0-9,\']+', '+', kw)
@@ -39,6 +48,8 @@ def googlesearchURL(kw):
 @api_view(['POST'])
 @permission_classes((IsAuthenticated,))
 def google_check(data):
+    proxy = random.choice(proxy_list)
+    print('Using proxy: '+str(proxy['proxy']))
     try:
         keyword = json.loads(data.body)['keyword']
         domain = json.loads(data.body)['domain']
@@ -54,7 +65,7 @@ def google_check(data):
         chrome_options.add_argument('--disable-dev-shm-usage')
         chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36")
         #driver= webdriver.Chrome('chromedriver',chrome_options=chrome_options, seleniumwire_options=proxy_options, desired_capabilities=caps)
-        driver= webdriver.Chrome(chromedriver,chrome_options=chrome_options)
+        driver= webdriver.Chrome(chromedriver,chrome_options=chrome_options,seleniumwire_options = proxy)
 
         driver.get(g_url)
 
