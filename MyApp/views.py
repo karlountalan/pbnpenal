@@ -137,7 +137,9 @@ def google_check(data):
 
         driver.get(g_url)
 
-        content = driver.page_source.encode('utf-8').strip()
+        try:
+            search_instead_button = driver.find_element_by_xpath("//span[contains(text(),'Search instead for')]/following-sibling::a")
+            driver.execute_script("arguments[0].click();", search_instead_button)
 
         n_results_string = driver.find_element_by_xpath(r'//div[@id = "result-stats"]').get_attribute('innerHTML')
 
