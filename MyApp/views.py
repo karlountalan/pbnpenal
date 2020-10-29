@@ -141,7 +141,7 @@ def google_check(data):
             search_instead_button = driver.find_element_by_xpath("//span[contains(text(),'Search instead for')]/following-sibling::a")
             driver.execute_script("arguments[0].click();", search_instead_button)
         except:
-            pass:
+            pass
 
         n_results_string = driver.find_element_by_xpath(r'//div[@id = "result-stats"]').get_attribute('innerHTML')
 
