@@ -127,9 +127,9 @@ def google_check(data):
         #caps = DesiredCapabilities().CHROME
         #caps["pageLoadStrategy"] = "none"
         chromedriver = '/usr/local/bin/chromedriver'
-        os.environ["webdriver.chrome.driver"] = chromedriver
-        chrome_options.add_argument('--headless')
+        #os.environ["webdriver.chrome.driver"] = chromedriver
         chrome_options.add_argument('--no-sandbox')
+        #chrome_options.add_argument('--headless')
         chrome_options.add_argument('--disable-dev-shm-usage')
         chrome_options.add_argument("user-agent="+u_agent)
         #driver= webdriver.Chrome('chromedriver',chrome_options=chrome_options, seleniumwire_options=proxy_options, desired_capabilities=caps)
@@ -139,7 +139,7 @@ def google_check(data):
 
         try:
             search_instead_button = driver.find_element_by_xpath("//span[contains(text(),'Search instead for')]/following-sibling::a")
-            driver.execute_script("arguments[0].click();", search_instead_button)
+            search_instead_button.click()
         except:
             pass
 
