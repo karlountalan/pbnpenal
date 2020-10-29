@@ -132,6 +132,7 @@ def google_check(data):
         #chrome_options.add_argument('--headless')
         chrome_options.add_argument('--disable-dev-shm-usage')
         chrome_options.add_argument("user-agent="+u_agent)
+        chrome_options.add_argument("--remote-debugging-port=8000")
         #driver= webdriver.Chrome('chromedriver',chrome_options=chrome_options, seleniumwire_options=proxy_options, desired_capabilities=caps)
         driver= webdriver.Chrome(chromedriver,chrome_options=chrome_options,seleniumwire_options = {'proxy':proxy})
 
