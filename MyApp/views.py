@@ -188,37 +188,91 @@ def google_check(data):
 
 
 
-
-
-
-
-
-
 @api_view(['POST'])
 @permission_classes((IsAuthenticated,))
-def IdealWeight(data):
+def google_check_2(data):
+    u_agent = random.choice(user_agent_list)
+    proxy = random.choice(proxy_list)
+    print('Using proxy: '+str(proxy))
     try:
-        height = json.loads(data.body)['height']
-        weight = json.loads(data.body)['weight']
-        age = json.loads(data.body)['age']
+        keyword = json.loads(data.body)['keyword']
+        domain = json.loads(data.body)['domain']
+        g_url = googlesearchURL(keyword)
 
-        return JsonResponse({'height':height, 'weight':weight, 'age':age}, safe=True)
+        headers= {'User-Agent': u_agent, "Accept-Language": "en-US, en;q=0.5"}
+        page = requests.get(g_url, headers=headers, proxies=proxy)
+        soup = BeautifulSoup(page.text, 'html.parser')
+        try:
+          g_url = 'https://www.google.com'+soup.find('a',{'class':'spell_orig'})['href']
+          page = requests.get(g_url, headers=headers, proxies=proxy)
+          soup = BeautifulSoup(page.text, 'html.parser')
+        except:
+          pass
+
+        n_results_string = soup.find('div', {'id':'result-stats'}).text
+        for i,n in enumerate(n_results_string.split()):
+            if n.replace(',','').isnumeric():
+                n_results = int(n.replace(',',''))
+                break
+
+        ctr = 1
+        top_rank = 0
+        max_page = 5
+        regex = '^(?:https?:\/\/)?(?:[^@\/\n]+@)?(?:www\.)?([^:\/?\n]+)'
+
+        for page in range(1,max_page+1):
+            if page > 1 :
+                time.sleep(random.randint(1,2))
+                headers= {'User-Agent': u_agent, "Accept-Language": "en-US, en;q=0.5"}
+                page = requests.get(next_url, headers=headers, proxies=proxy)
+                soup = BeautifulSoup(page.text, 'html.parser')
+
+            results_soup = soup.find('div',{'id':'rso'})
+            results = results_soup.find_all('div',{'class':'g'})
+            for ii,row in enumerate(results):
+              url = row.a['href']
+              dom_url = re.findall(regex,url)[0]
+              if dom_url == domain:
+                  top_rank = ctr
+                  break
+              ctr+=1
+            if top_rank != 0:
+              break
+            else:
+                try:
+                  next_url_add = soup.find('a',{'id':'pnnext'})['href']
+                  next_url = 'https://www.google.com' + next_url_add
+                except:
+                  break
+
+        return JsonResponse({'n_results':n_results,'top_rank':top_rank}, safe=True)
     except ValueError as e:
         return Response(e.args[0],status.HTTP_400_BAD_REQUEST)
 
-# class IdealWeightView(APIView):
-#     def POST(data):
-#         try:
-#             height = json.loads(data.body)['height']
-#             weight = json.loads(data.body)['weight']
-#             age = json.loads(data.body)['age']
-#
-#             return JsonResponse({'height':height, 'weight':weight, 'age':age}, safe=True)
-#         except ValueError as e:
-#             return Response(e.args[0],status.HTTP_400_BAD_REQUEST)
 
-class HelloView(APIView):
-    permission_classes = (IsAuthenticated,)
-    def get(self, request):
-        content = {'message': 'Hello, World!'}
-        return Response(content)
+
+
+
+
+
+
+
+
+# @api_view(['POST'])
+# @permission_classes((IsAuthenticated,))
+# def IdealWeight(data):
+#     try:
+#         height = json.loads(data.body)['height']
+#         weight = json.loads(data.body)['weight']
+#         age = json.loads(data.body)['age']
+#
+#         return JsonResponse({'height':height, 'weight':weight, 'age':age}, safe=True)
+#     except ValueError as e:
+#         return Response(e.args[0],status.HTTP_400_BAD_REQUEST)
+
+
+# class HelloView(APIView):
+#     permission_classes = (IsAuthenticated,)
+#     def get(self, request):
+#         content = {'message': 'Hello, World!'}
+#         return Response(content)
