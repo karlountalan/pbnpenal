@@ -111,86 +111,10 @@ def googlesearchURL(kw):
   url = main_gsearch_url+encoded_kw
   return url
 
+
 @api_view(['POST'])
 @permission_classes((IsAuthenticated,))
 def google_check(data):
-    time.sleep(random.randint(2,7))
-    u_agent = random.choice(user_agent_list)
-    proxy = random.choice(proxy_list)
-    print('Using proxy: '+str(proxy))
-    try:
-        keyword = json.loads(data.body)['keyword']
-        domain = json.loads(data.body)['domain']
-        g_url = googlesearchURL(keyword)
-
-        chrome_options = webdriver.ChromeOptions()
-        #caps = DesiredCapabilities().CHROME
-        #caps["pageLoadStrategy"] = "none"
-        chromedriver = '/usr/local/bin/chromedriver'
-        #os.environ["webdriver.chrome.driver"] = chromedriver
-        chrome_options.add_argument('--no-sandbox')
-        chrome_options.add_argument('--headless')
-        chrome_options.add_argument('--disable-dev-shm-usage')
-        chrome_options.add_argument("user-agent="+u_agent)
-        #driver= webdriver.Chrome('chromedriver',chrome_options=chrome_options, seleniumwire_options=proxy_options, desired_capabilities=caps)
-        driver= webdriver.Chrome(chromedriver,chrome_options=chrome_options,seleniumwire_options = {'proxy':proxy})
-
-        driver.get(g_url)
-
-        try:
-            search_instead_button = driver.find_element_by_xpath("//span[contains(text(),'Search instead for')]/following-sibling::a")
-            search_instead_button.click()
-        except:
-            pass
-
-        n_results_string = driver.find_element_by_xpath(r'//div[@id = "result-stats"]').get_attribute('innerHTML')
-
-        for i,n in enumerate(n_results_string.split()):
-            if n.replace(',','').isnumeric():
-                n_results = int(n.replace(',',''))
-                break
-
-        ctr = 1
-        top_rank = 0
-        max_page = 5
-        regex = '^(?:https?:\/\/)?(?:[^@\/\n]+@)?(?:www\.)?([^:\/?\n]+)'
-
-        for page in range(1,max_page+1):
-            results_ele = driver.find_element_by_xpath(r'//div[@id="rso"]')
-            soup = BeautifulSoup(results_ele.get_attribute('innerHTML'), 'html.parser')
-            results = soup.find_all('div',{'class':'g'})
-            for ii,row in enumerate(results):
-                url = row.a['href']
-                dom_url = re.findall(regex,url)[0]
-                if dom_url == domain:
-                    top_rank = ctr
-                    break
-                ctr+=1
-            if top_rank != 0:
-                break
-            else:
-                try:
-                    next_button = driver.find_element_by_xpath(r'//a[@aria-label = "Page '+str(page+1)+'"]')
-                    driver.execute_script("arguments[0].click();", next_button)
-                except:
-                    break
-
-
-        driver.quit()
-
-        return JsonResponse({'n_results':n_results,'top_rank':top_rank}, safe=True)
-    except ValueError as e:
-        return Response(e.args[0],status.HTTP_400_BAD_REQUEST)
-
-
-
-
-
-
-
-@api_view(['POST'])
-@permission_classes((IsAuthenticated,))
-def google_check_2(data):
     u_agent = random.choice(user_agent_list)
     proxy = random.choice(proxy_list)
     print('Using proxy: '+str(proxy))
