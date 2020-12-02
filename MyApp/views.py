@@ -113,6 +113,11 @@ for i in range(len(prx)):
   proxy = {'http':'http://'+str(prx.iloc[i,:][0].split(':')[3])+':'+str(prx.iloc[i,:][0].split(':')[4])+'@'+str(prx.iloc[i,:][0].split(':')[1])+':'+str(prx.iloc[i,:][0].split(':')[2])+'/', 'https':'https://'+str(prx.iloc[i,:][0].split(':')[3])+':'+str(prx.iloc[i,:][0].split(':')[4])+'@'+str(prx.iloc[i,:][0].split(':')[1])+':'+str(prx.iloc[i,:][0].split(':')[2])+'/'}
   proxy_list.append(proxy)
 
+def googlesearchURL(kw):
+  encoded_kw = re.sub('[^A-Za-z0-9,\']+', '+', kw)
+  main_gsearch_url = 'https://www.google.com/search?q='
+  url = main_gsearch_url+encoded_kw
+  return url
 
 
 @api_view(['POST'])
