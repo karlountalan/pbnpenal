@@ -21,9 +21,9 @@ import time
 import random
 import os
 import re
-import mysql.connector
+#import mysql.connector
 from pandas.io import sql
-from sqlalchemy import create_engine
+#from sqlalchemy import create_engine
 from itertools import cycle
 from seleniumwire import webdriver
 from selenium.webdriver.common.by import By
