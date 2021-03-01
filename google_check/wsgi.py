@@ -12,7 +12,7 @@ import os
 import sys #Add this
 
 from django.core.wsgi import get_wsgi_application
-sys.path.append('/home/pbnpenal/public_html/') #Add this also
+sys.path.append('/home/testing1/public_html/') #Add this also
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'google_check.settings')
 
 
