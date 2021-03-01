@@ -95,23 +95,36 @@ user_agent_list = ['Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:77.0) Gecko/20100101 Firefox/77.0',
 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36']
 
-db_connection = mysql.connector.connect(
-  host="52.7.60.221",
-  user="companies_api",
-  passwd="626gj46EfFk5s5zfXnLY43W",
-  database = 'companies_api_dev'
-)
-db_cursor = db_connection.cursor()
+# db_connection = mysql.connector.connect(
+#   host="52.7.60.221",
+#   user="companies_api",
+#   passwd="626gj46EfFk5s5zfXnLY43W",
+#   database = 'companies_api_dev'
+# )
+# db_cursor = db_connection.cursor()
+#
+# sql = "SELECT * from proxylist"
+# db_cursor.execute(sql)
+# res = db_cursor.fetchall()
+# column_names = [i[0] for i in db_cursor.description]
+# prx = pd.DataFrame(res,columns=column_names)
+# proxy_list = []
+# for i in range(len(prx)):
+#   proxy = {'http':'http://'+str(prx.iloc[i,:][0].split(':')[3])+':'+str(prx.iloc[i,:][0].split(':')[4])+'@'+str(prx.iloc[i,:][0].split(':')[1])+':'+str(prx.iloc[i,:][0].split(':')[2])+'/', 'https':'https://'+str(prx.iloc[i,:][0].split(':')[3])+':'+str(prx.iloc[i,:][0].split(':')[4])+'@'+str(prx.iloc[i,:][0].split(':')[1])+':'+str(prx.iloc[i,:][0].split(':')[2])+'/'}
+#   proxy_list.append(proxy)
 
-sql = "SELECT * from proxylist"
-db_cursor.execute(sql)
-res = db_cursor.fetchall()
-column_names = [i[0] for i in db_cursor.description]
-prx = pd.DataFrame(res,columns=column_names)
+response = requests.get("https://api.limeproxies.com/v2/product/active" , headers={'Content-type': 'application/json','Authorization': 'Bearer 237e7e99d28d62e1f6996cfccbbd6b69532cfacd16fecaf7f9e8352c1fc9dec0'})
+prod_id = response.json()[0]['id']
+response = requests.get("https://api.limeproxies.com/v2/product/"+str(prod_id)+"/status" , headers={'Content-type': 'application/json','Authorization': 'Bearer 237e7e99d28d62e1f6996cfccbbd6b69532cfacd16fecaf7f9e8352c1fc9dec0'})
+proxies_api = response.json()
+prx = []
+for i in proxies_api:
+  prx.append(i['proxy'])
 proxy_list = []
-for i in range(len(prx)):
-  proxy = {'http':'http://'+str(prx.iloc[i,:][0].split(':')[3])+':'+str(prx.iloc[i,:][0].split(':')[4])+'@'+str(prx.iloc[i,:][0].split(':')[1])+':'+str(prx.iloc[i,:][0].split(':')[2])+'/', 'https':'https://'+str(prx.iloc[i,:][0].split(':')[3])+':'+str(prx.iloc[i,:][0].split(':')[4])+'@'+str(prx.iloc[i,:][0].split(':')[1])+':'+str(prx.iloc[i,:][0].split(':')[2])+'/'}
+for i in prx:
+  proxy = {'http':'http://user-62396:karlountalan09@'+str(i)+'/', 'https':'https://user-62396:karlountalan09@'+str(i)+'/'}
   proxy_list.append(proxy)
+proxies = cycle(proxy_list)
 
 def googlesearchURL(kw):
   encoded_kw = re.sub('[^A-Za-z0-9,\']+', '+', kw)
