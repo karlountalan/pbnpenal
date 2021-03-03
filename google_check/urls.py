@@ -20,7 +20,7 @@ from MyApp import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     #path('idealweight/',views.IdealWeight),
-    path('googlecheck/',views.google_check),
+    path('',views.google_check),
     #path('idealweight/',views.IdealWeightView.as_view(), name='Idealweight'),
     #path('hello/',views.HelloView.as_view(), name='Karlou'),
 ]

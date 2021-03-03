@@ -25,7 +25,7 @@ SECRET_KEY = 'ko=&($15$*70!&)=$+-$3z%-3@howjy!=4ykx9h8)u(9kj!t&&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['162.243.13.110','127.0.0.1']
+ALLOWED_HOSTS = ['162.243.13.110','127.0.0.1', 'googlecheckapi.moonrakermarketing.com']
 
 
 # Application definition
@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'google_check.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': str(BASE_DIR / 'db.sqlite3'),
     }
 }
 
@@ -137,4 +137,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = '/home/testing1/public_html/static'
+STATIC_ROOT = '/home/googlech/public_html/static'
